@@ -5,43 +5,43 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const Providers = () => {
-  // Mock data for healthcare providers
+  // Mock data for healthcare providers with Indian names
   const providers = [
     {
       id: 1,
-      name: "Dr. Sarah Johnson",
+      name: "Dr. Arun Sharma",
       specialty: "Cardiologist",
       location: "Health Insights Medical Center",
       phone: "(555) 123-4567",
-      email: "sarah.johnson@healthinsights.com",
-      bio: "Dr. Johnson specializes in cardiovascular health with over 15 years of experience. Board certified in Cardiology and Internal Medicine."
+      email: "arun.sharma@healthinsights.com",
+      bio: "Dr. Sharma specializes in cardiovascular health with over 15 years of experience. Board certified in Cardiology and Internal Medicine."
     },
     {
       id: 2,
-      name: "Dr. Michael Chen",
+      name: "Dr. Sanjay Mehta",
       specialty: "Neurologist",
       location: "Health Insights Specialty Clinic",
       phone: "(555) 123-4568",
-      email: "michael.chen@healthinsights.com",
-      bio: "Dr. Chen is a renowned neurologist focusing on neurological disorders and stroke prevention. He has been with Health Insights for 10 years."
+      email: "sanjay.mehta@healthinsights.com",
+      bio: "Dr. Mehta is a renowned neurologist focusing on neurological disorders and stroke prevention. He has been with Health Insights for 10 years."
     },
     {
       id: 3,
-      name: "Dr. Emily Peters",
+      name: "Dr. Priya Patel",
       specialty: "Family Medicine",
       location: "Health Insights Family Practice",
       phone: "(555) 123-4569",
-      email: "emily.peters@healthinsights.com",
-      bio: "Dr. Peters provides comprehensive primary care for patients of all ages. She has a special interest in preventative health and women's health."
+      email: "priya.patel@healthinsights.com",
+      bio: "Dr. Patel provides comprehensive primary care for patients of all ages. She has a special interest in preventative health and women's health."
     },
     {
       id: 4,
-      name: "Dr. James Wilson",
+      name: "Dr. Rajesh Gupta",
       specialty: "Orthopedic Surgeon",
       location: "Health Insights Surgical Center",
       phone: "(555) 123-4570",
-      email: "james.wilson@healthinsights.com",
-      bio: "Dr. Wilson is a leading orthopedic surgeon specializing in sports medicine and joint replacement surgeries."
+      email: "rajesh.gupta@healthinsights.com",
+      bio: "Dr. Gupta is a leading orthopedic surgeon specializing in sports medicine and joint replacement surgeries."
     },
   ];
 

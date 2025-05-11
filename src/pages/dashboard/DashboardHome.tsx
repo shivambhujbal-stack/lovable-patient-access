@@ -1,17 +1,14 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MetricsPanel } from "@/components/dashboard/MetricsPanel";
-import { HealthTrendsChart } from "@/components/dashboard/HealthTrendsChart";
 import { Calendar, FileText, MessageSquare, BellRing } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const DashboardHome = () => {
-  // Mock data for timeline
+  // Mock data for timeline with Indian names
   const timelineEvents = [
     {
       date: "May 5, 2025",
       title: "Annual Physical Exam",
-      desc: "Completed with Dr. Sarah Johnson. General health assessed as good."
+      desc: "Completed with Dr. Arun Sharma. General health assessed as good."
     },
     {
       date: "April 22, 2025",
@@ -24,7 +21,7 @@ const DashboardHome = () => {
       desc: "Dosage adjusted for hypertension medication following review."
     }
   ];
-
+  
   // Mock data for notifications
   const notifications = [
     {

@@ -4,13 +4,13 @@ import { Calendar, Clock, FileText, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const History = () => {
-  // Mock data for medical history
+  // Mock data for medical history with Indian names
   const medicalHistory = [
     {
       id: 1,
       date: "May 5, 2025",
       type: "Annual Physical Exam",
-      provider: "Dr. Sarah Johnson",
+      provider: "Dr. Arun Sharma",
       notes: "General health assessment completed. All vitals within normal range. Recommended maintaining current exercise regimen and dietary habits."
     },
     {
@@ -24,21 +24,21 @@ const History = () => {
       id: 3,
       date: "April 10, 2025",
       type: "Medication Review",
-      provider: "Dr. Emily Peters",
+      provider: "Dr. Priya Patel",
       notes: "Reviewed current medications. Adjusted hypertension medication dosage. No adverse reactions reported."
     },
     {
       id: 4,
       date: "March 15, 2025",
       type: "Cardiology Consultation",
-      provider: "Dr. James Wilson",
+      provider: "Dr. Rajesh Gupta",
       notes: "EKG performed. Results normal. No signs of cardiovascular disease. Follow-up recommended in 6 months."
     },
     {
       id: 5,
       date: "February 8, 2025",
       type: "Vaccination",
-      provider: "Nurse Emily",
+      provider: "Nurse Anjali",
       notes: "Annual flu vaccination administered. No adverse reactions observed during 15-minute wait period."
     },
   ];

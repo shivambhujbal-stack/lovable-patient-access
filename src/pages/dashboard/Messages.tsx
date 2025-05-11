@@ -5,11 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Search, Send, User, Plus } from "lucide-react";
 
 const Messages = () => {
-  // Mock data for conversations
+  // Mock data for conversations with Indian names
   const conversations = [
     {
       id: 1,
-      name: "Dr. Sarah Johnson",
+      name: "Dr. Arun Sharma",
       role: "Cardiologist",
       lastMessage: "Your test results look good. Let's schedule a follow-up.",
       time: "10:30 AM",
@@ -17,7 +17,7 @@ const Messages = () => {
     },
     {
       id: 2,
-      name: "Dr. Michael Chen",
+      name: "Dr. Sanjay Mehta",
       role: "Neurologist",
       lastMessage: "Please fill out the symptom questionnaire before our next appointment.",
       time: "Yesterday",
@@ -25,7 +25,7 @@ const Messages = () => {
     },
     {
       id: 3,
-      name: "Nurse Emily",
+      name: "Nurse Anjali",
       role: "Primary Care",
       lastMessage: "Your prescription has been sent to the pharmacy.",
       time: "Monday",

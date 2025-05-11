@@ -16,14 +16,14 @@ const Profile = () => {
             <div className="mx-auto bg-primary/10 rounded-full p-6 mb-2">
               <User className="h-16 w-16 text-primary" />
             </div>
-            <CardTitle>John Doe</CardTitle>
+            <CardTitle>Rahul Sharma</CardTitle>
             <CardDescription>Patient ID: #123456</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 gap-3">
               <div className="flex items-center">
                 <Mail className="h-4 w-4 mr-2 text-muted-foreground" />
-                <span>john.doe@example.com</span>
+                <span>rahul.sharma@example.com</span>
               </div>
               <div className="flex items-center">
                 <Phone className="h-4 w-4 mr-2 text-muted-foreground" />
@@ -31,7 +31,7 @@ const Profile = () => {
               </div>
               <div className="flex items-center">
                 <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
-                <span>123 Main St, Anytown, CA 12345</span>
+                <span>123 Main St, New Delhi, 110001</span>
               </div>
             </div>
             <div className="pt-4">
@@ -50,18 +50,18 @@ const Profile = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="first-name">First Name</Label>
-                  <Input id="first-name" defaultValue="John" />
+                  <Input id="first-name" defaultValue="Rahul" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="last-name">Last Name</Label>
-                  <Input id="last-name" defaultValue="Doe" />
+                  <Input id="last-name" defaultValue="Sharma" />
                 </div>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" type="email" defaultValue="john.doe@example.com" />
+                  <Input id="email" type="email" defaultValue="rahul.sharma@example.com" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
@@ -77,21 +77,21 @@ const Profile = () => {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="city">City</Label>
-                  <Input id="city" defaultValue="Anytown" />
+                  <Input id="city" defaultValue="New Delhi" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="state">State</Label>
-                  <Input id="state" defaultValue="CA" />
+                  <Input id="state" defaultValue="Delhi" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="zip">Zip Code</Label>
-                  <Input id="zip" defaultValue="12345" />
+                  <Input id="zip" defaultValue="110001" />
                 </div>
               </div>
               
               <div className="space-y-2">
                 <Label htmlFor="emergency-contact">Emergency Contact</Label>
-                <Input id="emergency-contact" defaultValue="Jane Doe - (555) 987-6543" />
+                <Input id="emergency-contact" defaultValue="Anita Sharma - (555) 987-6543" />
               </div>
               
               <div className="pt-4 flex justify-end">
