@@ -1,9 +1,8 @@
 
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
-import DashboardHome from "./dashboard/DashboardHome";
 
 const Dashboard = () => {
   const { isAuthenticated } = useAuth();
@@ -22,7 +21,7 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      <DashboardHome />
+      <Outlet />
     </DashboardLayout>
   );
 };

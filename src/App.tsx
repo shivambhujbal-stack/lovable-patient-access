@@ -12,9 +12,9 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPassword from "./pages/ForgotPassword";
 import NotFound from "./pages/NotFound";
+import Dashboard from "./pages/Dashboard";
 
-// Dashboard
-import { DashboardLayout } from "./components/dashboard/DashboardLayout";
+// Dashboard Pages
 import DashboardHome from "./pages/dashboard/DashboardHome";
 import Appointments from "./pages/dashboard/Appointments";
 import MedicalRecords from "./pages/dashboard/MedicalRecords";
@@ -42,16 +42,18 @@ const App = () => (
             <Route path="/forgot-password" element={<ForgotPassword />} />
             
             {/* Dashboard Routes */}
-            <Route path="/dashboard" element={<DashboardLayout><DashboardHome /></DashboardLayout>} />
-            <Route path="/dashboard/appointments" element={<DashboardLayout><Appointments /></DashboardLayout>} />
-            <Route path="/dashboard/records" element={<DashboardLayout><MedicalRecords /></DashboardLayout>} />
-            <Route path="/dashboard/vitals" element={<DashboardLayout><VitalSigns /></DashboardLayout>} />
-            <Route path="/dashboard/analytics" element={<DashboardLayout><Analytics /></DashboardLayout>} />
-            <Route path="/dashboard/messages" element={<DashboardLayout><Messages /></DashboardLayout>} />
-            <Route path="/dashboard/providers" element={<DashboardLayout><Providers /></DashboardLayout>} />
-            <Route path="/dashboard/history" element={<DashboardLayout><History /></DashboardLayout>} />
-            <Route path="/dashboard/settings" element={<DashboardLayout><Settings /></DashboardLayout>} />
-            <Route path="/dashboard/profile" element={<DashboardLayout><Profile /></DashboardLayout>} />
+            <Route path="/dashboard" element={<Dashboard />}>
+              <Route index element={<DashboardHome />} />
+              <Route path="appointments" element={<Appointments />} />
+              <Route path="records" element={<MedicalRecords />} />
+              <Route path="vitals" element={<VitalSigns />} />
+              <Route path="analytics" element={<Analytics />} />
+              <Route path="messages" element={<Messages />} />
+              <Route path="providers" element={<Providers />} />
+              <Route path="history" element={<History />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="profile" element={<Profile />} />
+            </Route>
             
             <Route path="*" element={<NotFound />} />
           </Routes>
