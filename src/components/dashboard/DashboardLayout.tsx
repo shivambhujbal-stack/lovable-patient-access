@@ -1,7 +1,7 @@
 
-import { ReactNode } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { DashboardSidebar } from "./Sidebar";
-import { LogOut, BellRing } from "lucide-react";
+import { LogOut, BellRing, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -14,11 +14,33 @@ type DashboardLayoutProps = {
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+
+  useEffect(() => {
+    // Update time every second
+    const interval = setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   const handleLogout = () => {
     logout();
     navigate("/");
   };
+
+  // Format the date and time
+  const formattedDate = new Intl.DateTimeFormat('en-IN', {
+    dateStyle: 'medium'
+  }).format(currentDateTime);
+  
+  const formattedTime = new Intl.DateTimeFormat('en-IN', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+  }).format(currentDateTime);
 
   return (
     <SidebarProvider>
@@ -30,6 +52,14 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <SidebarTrigger />
               <h1 className="text-xl font-semibold text-foreground md:text-2xl">Patient Portal</h1>
             </div>
+            
+            <div className="hidden md:flex items-center gap-2">
+              <Clock className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium text-muted-foreground">
+                {formattedDate} | {formattedTime}
+              </span>
+            </div>
+            
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="icon" className="relative">
                 <BellRing className="h-5 w-5" />
