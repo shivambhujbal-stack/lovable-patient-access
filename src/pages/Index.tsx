@@ -3,9 +3,72 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { LogIn, UserPlus, Activity, FileText, Shield, ArrowRight, Check } from "lucide-react";
+import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
+import { Textarea } from "@/components/ui/textarea";
 
 const Index = () => {
   const { isAuthenticated } = useAuth();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Validate form
+    if (!formData.name || !formData.email || !formData.message) {
+      toast({
+        title: "Error",
+        description: "Please fill all required fields",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+    
+    try {
+      // In a real application, this would send data to a backend or email service
+      // This is just a simulation for demonstration purposes
+      console.log("Sending email to ayushsinghai585@gmail.com with data:", formData);
+      
+      // Simulate API call with timeout
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Show success message
+      toast({
+        title: "Form Submitted",
+        description: `Thank you for contacting us! Your message has been sent to ayushsinghai585@gmail.com`,
+      });
+      
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: ""
+      });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast({
+        title: "Error",
+        description: "Failed to send your message. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -260,29 +323,60 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
             <div className="bg-white p-8 rounded-lg shadow-md">
               <h3 className="text-2xl font-semibold text-gray-900 mb-6">Contact Us</h3>
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Name</label>
-                    <input type="text" id="name" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-medical-500 focus:border-medical-500" />
+                    <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-700">Name *</label>
+                    <input 
+                      type="text" 
+                      id="name" 
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-medical-500 focus:border-medical-500" 
+                    />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="email" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-medical-500 focus:border-medical-500" />
+                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700">Email *</label>
+                    <input 
+                      type="email" 
+                      id="email" 
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-medical-500 focus:border-medical-500" 
+                    />
                   </div>
                 </div>
                 <div>
                   <label htmlFor="subject" className="block mb-2 text-sm font-medium text-gray-700">Subject</label>
-                  <input type="text" id="subject" className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-medical-500 focus:border-medical-500" />
+                  <input 
+                    type="text" 
+                    id="subject" 
+                    value={formData.subject}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-medical-500 focus:border-medical-500" 
+                  />
                 </div>
                 <div>
-                  <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-700">Message</label>
-                  <textarea id="message" rows={4} className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-medical-500 focus:border-medical-500"></textarea>
+                  <label htmlFor="message" className="block mb-2 text-sm font-medium text-gray-700">Message *</label>
+                  <Textarea 
+                    id="message" 
+                    rows={4} 
+                    value={formData.message}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-medical-500 focus:border-medical-500"
+                  />
                 </div>
                 <div>
-                  <Button className="w-full medical-gradient hover:opacity-90">
-                    Send Message
+                  <Button 
+                    type="submit" 
+                    className="w-full medical-gradient hover:opacity-90"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Sending...' : 'Send Message'}
                   </Button>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Form submissions are sent to ayushsinghai585@gmail.com
+                  </p>
                 </div>
               </form>
             </div>
@@ -308,7 +402,7 @@ const Index = () => {
                     </svg>
                     <div>
                       <p className="font-medium">Email</p>
-                      <p className="text-gray-600">info@patientinsightsportal.com</p>
+                      <p className="text-gray-600">ayushsinghai585@gmail.com</p>
                     </div>
                   </div>
                   
