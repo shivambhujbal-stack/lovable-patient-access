@@ -1,6 +1,9 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, FileText, MessageSquare, BellRing } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { MetricsPanel } from "@/components/dashboard/MetricsPanel";
+import { HealthTrendsChart } from "@/components/dashboard/HealthTrendsChart";
 
 const DashboardHome = () => {
   // Mock data for timeline with Indian names

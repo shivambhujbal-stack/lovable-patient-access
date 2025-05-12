@@ -2,9 +2,16 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, TooltipProps } from "recharts";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "lucide-react";
+
+// Define tooltip props type for TypeScript
+type CustomTooltipProps = {
+  active?: boolean;
+  payload?: any[];
+  label?: string;
+};
 
 const VitalSigns = () => {
   const [dateRange, setDateRange] = useState("week");
@@ -57,7 +64,7 @@ const VitalSigns = () => {
   const latestTemperature = temperatureData[temperatureData.length - 1];
   
   // A custom tooltip for the charts
-  const CustomTooltip = ({ active, payload, label }) => {
+  const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-background p-3 border rounded-md shadow-sm">
