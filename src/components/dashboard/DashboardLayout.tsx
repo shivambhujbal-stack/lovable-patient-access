@@ -1,10 +1,10 @@
 
 import { ReactNode, useState, useEffect } from "react";
 import { DashboardSidebar } from "./Sidebar";
-import { LogOut, BellRing, Clock } from "lucide-react";
+import { LogOut, BellRing, Clock, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 type DashboardLayoutProps = {
@@ -51,6 +51,12 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <div className="flex items-center gap-3">
               <SidebarTrigger />
               <h1 className="text-xl font-semibold text-foreground md:text-2xl">Patient Portal</h1>
+              <Button variant="ghost" size="sm" asChild className="ml-2">
+                <Link to="/dashboard">
+                  <Home className="h-5 w-5" />
+                  <span className="sr-only md:not-sr-only md:ml-2">Home</span>
+                </Link>
+              </Button>
             </div>
             
             <div className="hidden md:flex items-center gap-2">
