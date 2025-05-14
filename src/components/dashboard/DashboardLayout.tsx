@@ -52,7 +52,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               <SidebarTrigger />
               <h1 className="text-xl font-semibold text-foreground md:text-2xl">Patient Portal</h1>
               <Button variant="ghost" size="sm" asChild className="ml-2">
-                <Link to="/dashboard">
+                <Link to="/">
                   <Home className="h-5 w-5" />
                   <span className="sr-only md:not-sr-only md:ml-2">Home</span>
                 </Link>
@@ -95,3 +95,4 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     </SidebarProvider>
   );
 };
+
