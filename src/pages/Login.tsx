@@ -7,25 +7,78 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
-import { Eye, EyeOff, LogIn } from "lucide-react";
+import { Eye, EyeOff, LogIn, Smartphone } from "lucide-react";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login } = useAuth();
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [showOtpStep, setShowOtpStep] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [resendDisabled, setResendDisabled] = useState(false);
+  const [resendCountdown, setResendCountdown] = useState(30);
+  const { login, verifyOtp } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSendOtp = async () => {
+    if (!phoneNumber || phoneNumber.length < 10) {
+      toast({
+        variant: "destructive",
+        title: "Invalid phone number",
+        description: "Please enter a valid phone number",
+      });
+      return;
+    }
+    
+    setIsSubmitting(true);
+    try {
+      // Simulate OTP sending
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      setOtpSent(true);
+      setResendDisabled(true);
+      
+      let countDown = 30;
+      setResendCountdown(countDown);
+      
+      const timer = setInterval(() => {
+        countDown -= 1;
+        setResendCountdown(countDown);
+        
+        if (countDown <= 0) {
+          clearInterval(timer);
+          setResendDisabled(false);
+        }
+      }, 1000);
+      
+      toast({
+        title: "OTP sent successfully",
+        description: `A verification code has been sent to ${phoneNumber}`,
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Failed to send OTP",
+        description: "Please try again later",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleInitialSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!email || !password) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Please fill in all fields",
+        description: "Please fill in all required fields",
       });
       return;
     }
@@ -33,15 +86,160 @@ const Login = () => {
     setIsSubmitting(true);
     
     try {
-      await login(email, password);
-      navigate("/dashboard");
+      // First step authentication
+      await login(email, password, false);
+      setShowOtpStep(true);
     } catch (error) {
-      // Error is handled in the auth context
       console.error("Login failed:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const handleOtpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!otp || otp.length !== 6) {
+      toast({
+        variant: "destructive",
+        title: "Invalid OTP",
+        description: "Please enter the 6-digit verification code",
+      });
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      // Verify OTP and complete the login process
+      await verifyOtp(email, otp);
+      navigate("/dashboard");
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Verification failed",
+        description: "The verification code is incorrect or has expired",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (showOtpStep) {
+    return (
+      <div className="auth-container flex items-center justify-center p-4 min-h-screen animate-fadeIn">
+        <div className="w-full max-w-md">
+          <div className="text-center mb-6">
+            <h1 className="text-3xl font-bold text-medical-700">Patient Insights Portal</h1>
+            <p className="text-muted-foreground mt-2">Verify your identity</p>
+          </div>
+          
+          <Card className="shadow-lg border-medical-200">
+            <CardHeader className="space-y-1">
+              <CardTitle className="text-2xl font-semibold text-center">Two-Factor Authentication</CardTitle>
+              <CardDescription className="text-center">
+                Enter the verification code to complete sign in
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent>
+              <form onSubmit={handleOtpSubmit} className="space-y-4">
+                {!otpSent ? (
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Mobile Number</Label>
+                    <div className="flex space-x-2">
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="Enter your mobile number"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        className="flex-1 border-medical-200 focus:border-medical-500"
+                      />
+                      <Button
+                        type="button"
+                        onClick={handleSendOtp}
+                        disabled={isSubmitting || !phoneNumber}
+                        className="whitespace-nowrap bg-medical-600 hover:bg-medical-700"
+                      >
+                        {isSubmitting ? "Sending..." : "Send OTP"}
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="otp">Verification Code</Label>
+                      <div className="flex justify-center py-2">
+                        <InputOTP maxLength={6} value={otp} onChange={setOtp}>
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} />
+                            <InputOTPSlot index={1} />
+                            <InputOTPSlot index={2} />
+                            <InputOTPSlot index={3} />
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
+                      </div>
+                      <p className="text-sm text-center text-muted-foreground">
+                        Enter the 6-digit code sent to {phoneNumber}
+                      </p>
+                    </div>
+                    
+                    <div className="text-center">
+                      <Button
+                        type="button"
+                        variant="link"
+                        disabled={resendDisabled}
+                        onClick={handleSendOtp}
+                        className="text-medical-600"
+                      >
+                        {resendDisabled 
+                          ? `Resend code in ${resendCountdown}s` 
+                          : "Resend verification code"}
+                      </Button>
+                    </div>
+                    
+                    <Button 
+                      type="submit" 
+                      disabled={isSubmitting || otp.length !== 6}
+                      className="w-full medical-gradient hover:opacity-90 transition-opacity"
+                    >
+                      {isSubmitting ? (
+                        <span className="flex items-center justify-center">
+                          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          Verifying...
+                        </span>
+                      ) : (
+                        <span className="flex items-center justify-center">
+                          <Smartphone className="mr-2 h-4 w-4" />
+                          Verify and Sign in
+                        </span>
+                      )}
+                    </Button>
+                  </div>
+                )}
+              </form>
+            </CardContent>
+            
+            <CardFooter className="flex justify-center">
+              <Button 
+                variant="ghost" 
+                onClick={() => setShowOtpStep(false)}
+                className="text-medical-600"
+              >
+                Go back to login
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="auth-container flex items-center justify-center p-4 min-h-screen animate-fadeIn">
@@ -60,7 +258,7 @@ const Login = () => {
           </CardHeader>
           
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleInitialSubmit} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input 
@@ -117,7 +315,7 @@ const Login = () => {
                 ) : (
                   <span className="flex items-center justify-center">
                     <LogIn className="mr-2 h-4 w-4" />
-                    Sign in
+                    Continue
                   </span>
                 )}
               </Button>

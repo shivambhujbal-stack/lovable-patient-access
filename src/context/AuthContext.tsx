@@ -13,9 +13,10 @@ type AuthContextType = {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, skipTwoFactor?: boolean) => Promise<void>;
   signup: (userData: SignupData) => Promise<void>;
   logout: () => void;
+  verifyOtp: (email: string, otp: string) => Promise<void>;
 };
 
 type SignupData = {
@@ -39,6 +40,7 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [pendingUser, setPendingUser] = useState<{email: string} | null>(null);
   const { toast } = useToast();
 
   // Check if user is logged in when the app loads
@@ -54,28 +56,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkAuthStatus();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, skipTwoFactor: boolean = false) => {
     setIsLoading(true);
     try {
       // In a real app, this would be an API call to authenticate
-      // For now, we'll simulate a successful login for demo purposes
       if (email && password.length >= 6) {
-        // Mock user for demo
-        const mockUser = {
-          id: '123456',
-          email,
-          name: email.split('@')[0],
-          role: 'patient' as const
-        };
-        
-        // Store user in localStorage for persistence
-        localStorage.setItem('user', JSON.stringify(mockUser));
-        setUser(mockUser);
-        
-        toast({
-          title: "Login successful",
-          description: "Welcome back to Patient Insights Portal!",
-        });
+        if (skipTwoFactor) {
+          // Complete login immediately if skipping 2FA
+          const mockUser = {
+            id: '123456',
+            email,
+            name: email.split('@')[0],
+            role: 'patient' as const
+          };
+          
+          localStorage.setItem('user', JSON.stringify(mockUser));
+          setUser(mockUser);
+          
+          toast({
+            title: "Login successful",
+            description: "Welcome back to Patient Insights Portal!",
+          });
+        } else {
+          // Set the user as pending, waiting for OTP verification
+          setPendingUser({ email });
+          
+          toast({
+            title: "First step complete",
+            description: "Please complete verification to continue",
+          });
+        }
       } else {
         throw new Error('Invalid credentials');
       }
@@ -84,6 +94,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         variant: "destructive",
         title: "Login failed",
         description: error instanceof Error ? error.message : "Please check your credentials and try again",
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const verifyOtp = async (email: string, otp: string) => {
+    setIsLoading(true);
+    try {
+      // Simulate OTP verification
+      if (otp.length === 6) {
+        // Check if the OTP is valid (in a real app, this would validate against a sent OTP)
+        // For demo, we'll accept any 6-digit code
+        
+        // Create the user after successful verification
+        const mockUser = {
+          id: '123456',
+          email,
+          name: email.split('@')[0],
+          role: 'patient' as const
+        };
+        
+        localStorage.setItem('user', JSON.stringify(mockUser));
+        setUser(mockUser);
+        setPendingUser(null);
+        
+        toast({
+          title: "Verification successful",
+          description: "Welcome back to Patient Insights Portal!",
+        });
+      } else {
+        throw new Error('Invalid verification code');
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Verification failed",
+        description: error instanceof Error ? error.message : "Please check the verification code and try again",
       });
       throw error;
     } finally {
@@ -144,7 +193,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isLoading, 
       login, 
       signup,
-      logout 
+      logout,
+      verifyOtp 
     }}>
       {children}
     </AuthContext.Provider>
