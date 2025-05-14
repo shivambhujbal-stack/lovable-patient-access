@@ -1,4 +1,5 @@
 
+import { useState, useEffect } from "react";
 import { ArrowDown, ArrowUp, Activity, Users, FileText, Clock } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -36,35 +37,79 @@ const Metric = ({ title, value, description, trend, icon }: MetricProps) => (
   </Card>
 );
 
+// Generate a random number within a specific range
+const getRandomNumber = (min: number, max: number): number => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
+// Format a number with commas
+const formatNumber = (num: number): string => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 export const MetricsPanel = () => {
-  // Mock data - in a real app, this would come from an API
+  // Initial metric values
+  const [patientVisits, setPatientVisits] = useState(2345);
+  const [responseTime, setResponseTime] = useState(24);
+  const [healthIndex, setHealthIndex] = useState(88.2);
+  const [reportsGenerated, setReportsGenerated] = useState(1458);
+
+  // Update metrics every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Small random fluctuations
+      setPatientVisits(prev => {
+        const change = getRandomNumber(-10, 15);
+        return Math.max(2000, prev + change); // Ensure doesn't go below 2000
+      });
+      
+      setResponseTime(prev => {
+        const change = getRandomNumber(-1, 1) * 0.5;
+        return Math.max(18, Math.min(30, Number((prev + change).toFixed(1)))); // Between 18-30
+      });
+      
+      setHealthIndex(prev => {
+        const change = getRandomNumber(-10, 10) * 0.1;
+        return Number((prev + change).toFixed(1));
+      });
+      
+      setReportsGenerated(prev => {
+        const change = getRandomNumber(-5, 8);
+        return Math.max(1400, prev + change); // Ensure doesn't go below 1400
+      });
+    }, 1000);
+
+    return () => clearInterval(interval); // Clean up interval on unmount
+  }, []);
+
+  // Prepare metrics for rendering
   const metrics = [
     {
       title: "Patient Visits",
-      value: "2,345",
+      value: formatNumber(patientVisits),
       description: "from last month",
-      trend: { value: 12, isPositive: true },
+      trend: { value: patientVisits > 2345 ? 12 : 10, isPositive: patientVisits >= 2345 },
       icon: <Users className="h-5 w-5" />
     },
     {
       title: "Avg. Response Time",
-      value: "24 mins",
-      description: "from 28 mins",
-      trend: { value: 14, isPositive: true },
+      value: `${responseTime} mins`,
+      description: `from ${responseTime > 24 ? '30' : '28'} mins`,
+      trend: { value: responseTime <= 24 ? 14 : 8, isPositive: responseTime <= 24 },
       icon: <Clock className="h-5 w-5" />
     },
     {
       title: "Healthcare Index",
-      value: "88.2",
-      description: "requires attention",
-      trend: { value: 2, isPositive: false },
+      value: healthIndex.toFixed(1),
+      description: healthIndex < 88 ? "requires attention" : "good standing",
+      trend: { value: healthIndex >= 88 ? 2 : 4, isPositive: healthIndex >= 88 },
       icon: <Activity className="h-5 w-5" />
     },
     {
       title: "Reports Generated",
-      value: "1,458",
+      value: formatNumber(reportsGenerated),
       description: "this quarter",
-      trend: { value: 5, isPositive: true },
+      trend: { value: reportsGenerated >= 1458 ? 5 : 3, isPositive: reportsGenerated >= 1458 },
       icon: <FileText className="h-5 w-5" />
     }
   ];
