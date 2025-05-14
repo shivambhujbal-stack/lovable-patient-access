@@ -1,11 +1,16 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Download, Search, Plus } from "lucide-react";
+import { FileText, Download, Search, Plus, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "@/components/ui/use-toast";
 
 const MedicalRecords = () => {
-  const records = [
+  const [records, setRecords] = useState([
     {
       id: 1,
       title: "Annual Physical Results",
@@ -46,17 +51,213 @@ const MedicalRecords = () => {
       type: "Lab Results",
       size: "1.1 MB"
     },
+  ]);
+
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [formData, setFormData] = useState({
+    title: "",
+    doctor: "Dr. Sarah Johnson",
+    type: "Examination",
+    file: null
+  });
+
+  const doctors = [
+    "Dr. Sarah Johnson",
+    "Dr. Michael Chen", 
+    "Dr. James Wilson",
+    "Dr. Emily Peters"
   ];
+
+  const recordTypes = [
+    "Examination",
+    "Lab Results",
+    "Specialist",
+    "Immunization",
+    "Prescription",
+    "Surgery",
+    "Dental",
+    "Vision"
+  ];
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setFormData({ ...formData, file: e.target.files[0] });
+    }
+  };
+
+  const handleUpload = () => {
+    if (!formData.file || !formData.title) {
+      toast({
+        title: "Missing Information",
+        description: "Please provide a title and select a file to upload.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Simulate upload process
+    setIsUploading(true);
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 10;
+      setUploadProgress(progress);
+      
+      if (progress >= 100) {
+        clearInterval(interval);
+        
+        // Add the new record to the list
+        const fileSize = formData.file.size;
+        let sizeString = fileSize < 1024 * 1024 
+          ? `${Math.round(fileSize / 1024)} KB` 
+          : `${(fileSize / (1024 * 1024)).toFixed(1)} MB`;
+        
+        const newRecord = {
+          id: records.length + 1,
+          title: formData.title,
+          date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+          doctor: formData.doctor,
+          type: formData.type,
+          size: sizeString
+        };
+
+        setRecords([newRecord, ...records]);
+        setFormData({
+          title: "",
+          doctor: "Dr. Sarah Johnson",
+          type: "Examination",
+          file: null
+        });
+        setIsUploading(false);
+        setUploadProgress(0);
+
+        toast({
+          title: "Upload Successful",
+          description: `${newRecord.title} has been uploaded successfully.`
+        });
+      }
+    }, 300);
+  };
+
+  const handleSearch = (e) => {
+    // Future implementation: Search functionality
+    console.log("Searching for:", e.target.value);
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <h2 className="text-3xl font-bold">Medical Records</h2>
         <div className="flex gap-2">
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Upload New Record
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Upload New Record
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle>Upload Medical Record</DialogTitle>
+                <DialogDescription>
+                  Upload a new medical record to your health profile.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="title">Title</Label>
+                  <Input 
+                    id="title" 
+                    name="title" 
+                    placeholder="Enter record title" 
+                    value={formData.title}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="doctor">Doctor</Label>
+                  <Select 
+                    name="doctor" 
+                    value={formData.doctor} 
+                    onValueChange={(value) => setFormData({...formData, doctor: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a doctor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {doctors.map((doctor) => (
+                        <SelectItem key={doctor} value={doctor}>
+                          {doctor}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="type">Record Type</Label>
+                  <Select 
+                    name="type" 
+                    value={formData.type} 
+                    onValueChange={(value) => setFormData({...formData, type: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select record type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {recordTypes.map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="file">Upload File</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="file"
+                      type="file"
+                      className="cursor-pointer"
+                      onChange={handleFileChange}
+                    />
+                  </div>
+                </div>
+
+                {isUploading && (
+                  <div className="mt-2">
+                    <div className="bg-gray-200 h-2 rounded-full">
+                      <div 
+                        className="bg-primary h-2 rounded-full transition-all" 
+                        style={{ width: `${uploadProgress}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-xs text-center mt-1">{uploadProgress}% complete</p>
+                  </div>
+                )}
+              </div>
+              <DialogFooter>
+                <Button onClick={handleUpload} disabled={isUploading}>
+                  {isUploading ? (
+                    <>
+                      <Upload className="mr-2 h-4 w-4 animate-pulse" />
+                      Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="mr-2 h-4 w-4" />
+                      Upload Record
+                    </>
+                  )}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <Button variant="outline">
             <Download className="mr-2 h-4 w-4" />
             Request Records
@@ -70,7 +271,11 @@ const MedicalRecords = () => {
           <CardDescription>Access and download your medical records</CardDescription>
           <div className="mt-2 relative">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search records..." className="pl-8" />
+            <Input 
+              placeholder="Search records..." 
+              className="pl-8" 
+              onChange={handleSearch}
+            />
           </div>
         </CardHeader>
         <CardContent>
