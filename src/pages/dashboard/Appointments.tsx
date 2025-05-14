@@ -1,9 +1,20 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Clock, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { 
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle
+} from "@/components/ui/dialog";
+import { AppointmentScheduleForm } from "@/components/appointments/AppointmentScheduleForm";
 
 const Appointments = () => {
+  const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false);
+
   const upcomingAppointments = [
     {
       id: 1,
@@ -41,7 +52,7 @@ const Appointments = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold">Appointments</h2>
-        <Button>
+        <Button onClick={() => setIsScheduleDialogOpen(true)}>
           <Calendar className="mr-2 h-4 w-4" />
           Schedule New Appointment
         </Button>
@@ -143,6 +154,19 @@ const Appointments = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Appointment Scheduling Dialog */}
+      <Dialog open={isScheduleDialogOpen} onOpenChange={setIsScheduleDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Schedule New Appointment</DialogTitle>
+            <DialogDescription>
+              Choose a doctor, date, and time for your appointment.
+            </DialogDescription>
+          </DialogHeader>
+          <AppointmentScheduleForm onSuccess={() => setIsScheduleDialogOpen(false)} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
